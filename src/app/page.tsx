@@ -12,15 +12,12 @@ import { getDayOrNightIcon } from "@/utils/getDayOrNightIcon";
 import { metersToKilometers } from "@/utils/metersToKilometers";
 import axios from "axios";
 import { format, fromUnixTime, parseISO } from "date-fns";
-import Image from "next/image";
+
 import { useQuery } from "react-query";
 import { loadingCityAtom, placeAtom } from "./atom";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
-// import { format as dateFromate } from "date-format";
-
-// var format = require('date-format');
-// format('hh:mm:ss.SSS', new Date()); // just the time
+import BarLoader from "react-spinners/BarLoader";
 interface WeatherDetail {
   dt: number;
   main: {
@@ -105,7 +102,7 @@ export default function Home() {
       data?.list.map(
         (entry) => new Date(entry.dt * 1000).toISOString().split("T")[0]
       )
-    )
+    ),
   ];
 
   // Filtering data to get the first entry after 6 AM for each unique date
@@ -119,8 +116,12 @@ export default function Home() {
 
   if (isLoading)
     return (
-      <div className="flex items-center min-h-screen justify-center">
-        <p className="animate-bounce">Loading...</p>
+      <div className="flex items-center min-h-screen justify-center bg-customColor">
+        <BarLoader
+          color="white"
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
       </div>
     );
   if (error)
@@ -131,7 +132,7 @@ export default function Home() {
       </div>
     );
   return (
-    <div className="flex flex-col gap-4 bg-gray-100 min-h-screen ">
+    <div className="flex flex-col gap-4 bg-customColor min-h-screen scrollbarHide">
       <Navbar location={data?.city.name} />
       <main className="px-3 max-w-7xl mx-auto flex flex-col gap-9  w-full  pb-10 pt-4 ">
         {/* today data  */}
@@ -142,13 +143,15 @@ export default function Home() {
             <section className="space-y-4 ">
               <div className="space-y-2">
                 <h2 className="flex gap-1 text-2xl  items-end ">
-                  <p>{format(parseISO(firstData?.dt_txt ?? ""), "EEEE")}</p>
-                  <p className="text-lg">
+                  <p className="text-white">
+                    {format(parseISO(firstData?.dt_txt ?? ""), "EEEE")}
+                  </p>
+                  <p className="text-lg gradient-text">
                     ({format(parseISO(firstData?.dt_txt ?? ""), "dd.MM.yyyy")})
                   </p>
                 </h2>
                 <Container className=" gap-10 px-6 items-center">
-                  {/* temprature */}
+                  {/* temperature */}
                   <div className=" flex flex-col px-4 ">
                     <span className="text-5xl">
                       {convertKelvinToCelsius(firstData?.main.temp ?? 296.37)}°
@@ -228,14 +231,14 @@ export default function Home() {
               </div>
             </section>
 
-            {/* 7 day forcast data  */}
+            {/* 7 day forecast data  */}
             <section className="flex w-full flex-col gap-4  ">
-              <p className="text-2xl">Forcast (7 days)</p>
+              <p className="text-2xl gradient-text">Forecast (7 days)</p>
               {firstDataForEachDate.map((d, i) => (
                 <ForecastWeatherDetail
                   key={i}
                   description={d?.weather[0].description ?? ""}
-                  weatehrIcon={d?.weather[0].icon ?? "01d"}
+                  weatherIcon={d?.weather[0].icon ?? "01d"}
                   date={d ? format(parseISO(d.dt_txt), "dd.MM") : ""}
                   day={d ? format(parseISO(d.dt_txt), "dd.MM") : "EEEE"}
                   feels_like={d?.main.feels_like ?? 0}

@@ -2,3 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Define a custom class for the gradient text */
+.gradient-text {
+  @apply bg-gradient-to-b from-yellow-100 to-yellow-500 bg-clip-text not-italic text-transparent;
+}
+
+/* Add the custom properties for the gradient */
+.gradient-text {
+  --tw-gradient-from: #fef9c3; /* Light yellow */
+  --tw-gradient-to: #eab308; /* Dark yellow */
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Apply the linear gradient */
+.gradient-text {
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
