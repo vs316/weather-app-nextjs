@@ -7,6 +7,15 @@ import { loadingCityAtom, placeAtom } from "@/app/atom";
 import { useAtom } from "jotai";
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY;
+type SuggestionBoxProps = {
+  showSuggestions: boolean;
+  suggestions: string[];
+  handleSuggestionClick: (
+    value: string,
+    event: React.MouseEvent<HTMLLIElement>
+  ) => void;
+  error: string;
+};
 
 export default function Navbar({ location }: { location?: string }) {
   const [city, setCity] = useState<string>("");
@@ -119,14 +128,17 @@ export default function Navbar({ location }: { location?: string }) {
             <h2 className="text-3xl gradient-text">WhatTheWeather!</h2>
             <MdWbSunny className="text-3xl mt-1 text-yellow-300" />
           </p>
-          <section className="flex gap-2 items-center">
+          <section className="flex gap-2 items-center md:justify-end">
             <MdMyLocation
               title="Your Current Location"
               onClick={handleCurrentLocation}
-              className="cursor:pointer text-2xl relative inline-flex h-fit w-fit rounded-full border border-blue-100/20 bg-blue-200/10 px-4 py-2 text-blue-200 outline-none ring-yellow-300 transition-colors after:absolute after:inset-0 after:-z-10 after:animate-pulse after:rounded-full after:bg-yellow-100 after:bg-opacity-0 after:blur-md after:transition-all after:duration-500 hover:border-yellow-200/40 hover:text-yellow-300 after:hover:bg-opacity-15 focus:ring-2"
+              className="cursor:pointer text-2xl relative inline-flex h-fit w-fit rounded-full border border-blue-100/20 bg-blue-200/10 px-4 py-2 text-blue-200 outline-none ring-yellow-300 transition-colors after:absolute after:inset-0 after:-z-10 after:animate-pulse after:rounded-full after:bg-yellow-100 after:bg-opacity-0 after:blur-md after:transition-all after:duration-500 hover:border-yellow-200/40 hover:text-yellow-300 after:hover:bg-opacity-15 focus:ring-2 md:hidden"
             />
-            <MdOutlineLocationOn className="text-3xl text-white" />
-            <p className="gradient-text text-sm"> {location} </p>
+            <MdOutlineLocationOn className="text-3xl text-white hidden md:block" />
+            <p className="gradient-text text-sm hidden md:block">
+              {" "}
+              {location}{" "}
+            </p>
             <div className="relative hidden md:flex" ref={searchRef}>
               <SearchBox
                 value={city}
@@ -146,7 +158,7 @@ export default function Navbar({ location }: { location?: string }) {
         </div>
       </nav>
       <section className="flex max-w-7xl px-3 md:hidden">
-        <div className="relative">
+        <div className="relative w-full">
           <SearchBox
             value={city}
             onSubmit={handleSubmitSearch}
@@ -171,12 +183,7 @@ function SuggestionBox({
   suggestions,
   handleSuggestionClick,
   error,
-}: {
-  showSuggestions: boolean;
-  suggestions: string[];
-  handleSuggestionClick: (value: string) => void;
-  error: string;
-}) {
+}: SuggestionBoxProps) {
   return (
     <>
       {((showSuggestions && suggestions.length > 1) || error) && (
@@ -187,7 +194,7 @@ function SuggestionBox({
           {suggestions.map((item: string, i: number) => (
             <li
               key={i}
-              onClick={() => handleSuggestionClick(item)}
+              onClick={(e) => handleSuggestionClick(item, e)}
               className="cursor-pointer p-1 rounded hover:bg-gray-200"
             >
               {item}
