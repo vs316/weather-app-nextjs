@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  overflow-x: hidden; /* This disables horizontal scrolling */
+  overflow-y: auto; /* This allows vertical scrolling */
+  height: 100%;
+  overscroll-behavior: none;
+  margin: 0;
+}
+
 /* Define a custom class for the gradient text */
 .gradient-text {
   @apply bg-gradient-to-b from-yellow-100 to-yellow-500 bg-clip-text not-italic text-transparent;
